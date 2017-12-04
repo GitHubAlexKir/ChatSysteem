@@ -1,5 +1,6 @@
 package ChatClient.Login;
 
+import ChatClient.Home.HomeController;
 import ChatClient.Register.RegisterController;
 import Interfaces.IChatServerManager;
 import Interfaces.IUser;
@@ -71,6 +72,29 @@ public class LoginController {
         stage.setScene(registerScreen);
         stage.show();
     }
+
+    private void toHomeScreen(IUser user)  {
+        // Set the next "page" (scene) to display.
+        // Note that an incorrect path will result in unexpected NullPointer exceptions!
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Home/Home.fxml"));
+
+        Parent root = null;
+        try {
+            root = (Parent)fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        HomeController controller = fxmlLoader.<HomeController>getController();
+        controller.setSettings(user,server);
+        // There's no additional data required by the newly opened form.
+        Scene registerScreen = new Scene(root);
+
+        Stage stage;
+        stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
+
+        stage.setScene(registerScreen);
+        stage.show();
+    }
     @FXML
     private void login()
     {
@@ -79,6 +103,7 @@ public class LoginController {
                 user = server.login(txt_username.getText(),txt_password.getText());
                 if (user != null){
                     System.out.println("success");
+                    toHomeScreen(user);
                 }
                 else
                 {
