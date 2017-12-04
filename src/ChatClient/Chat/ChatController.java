@@ -1,9 +1,8 @@
 package ChatClient.Chat;
 
 import ChatClient.Home.HomeController;
-import Interfaces.IChat;
-import Interfaces.IChatServerManager;
-import Interfaces.IUser;
+import Interfaces.*;
+import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -14,9 +13,13 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class ChatController {
+public class ChatController extends UnicastRemoteObject implements IListener  {
     @FXML
     private Text txt_username;
     @FXML
@@ -26,14 +29,39 @@ public class ChatController {
     private IUser user;
     private IChatServerManager server;
     private IChat chat;
-    public ChatController() {
+    private List<IMessage> messages = new ArrayList<>();
+    private AnimationTimer messageTimer;
 
+
+
+
+    public ChatController() throws RemoteException {
+        messageTimer = new AnimationTimer() {
+            @Override
+            public void handle(long now) {
+                updateListViewMessages();
+            }
+        };
+        messageTimer.start();
+    }
+    private void updateListViewMessages() {
+        lv_messages.setCellFactory(t -> new CustomListCell());
+        lv_messages.getItems().clear();
+        for (IMessage message:messages
+                ) {
+            lv_messages.getItems().add(message);
+        }
     }
     public void setup(IUser user, IChatServerManager server, IChat chat)
     {
         this.user = user;
         this.server = server;
         this.chat = chat;
+        try {
+            server.addListener(this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
     @FXML
     private void sendMessage()
@@ -67,5 +95,25 @@ public class ChatController {
         stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
         stage.setScene(registerScreen);
         stage.show();
+    }
+
+    @Override
+    public void setChatMessages(List<IMessage> messages) {
+        this.messages = messages;
+    }
+
+    @Override
+    public int getChatId() {
+        return this.chat.getID();
+    }
+
+    @Override
+    public int getUserId() {
+        return this.user.getID();
+    }
+
+    @Override
+    public List<IMessage> getchatMessages() {
+        return this.messages;
     }
 }

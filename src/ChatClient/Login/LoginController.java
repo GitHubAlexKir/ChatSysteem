@@ -31,6 +31,7 @@ public class LoginController {
 
     public LoginController() {
         try {
+            System.setProperty("java.rmi.server.hostname","127.0.0.1");
             this.registry = locateRegistry();
             this.server = (IChatServerManager) registry.lookup("ChatServer");
         } catch (SQLException e) {
