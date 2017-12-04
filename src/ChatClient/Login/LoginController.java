@@ -1,10 +1,15 @@
-package ChatClient;
+package ChatClient.Login;
 
+import ChatClient.Register.RegisterController;
 import Interfaces.IChatServerManager;
 import Interfaces.IUser;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.io.PrintStream;
@@ -41,9 +46,31 @@ public class LoginController {
     @FXML
     private void register()
     {
-
+        toRegisterScreen();
     }
+    @FXML
+    private void toRegisterScreen()  {
+        // Set the next "page" (scene) to display.
+        // Note that an incorrect path will result in unexpected NullPointer exceptions!
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Register/Register.fxml"));
 
+        Parent root = null;
+        try {
+            root = (Parent)fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        RegisterController controller = fxmlLoader.<RegisterController>getController();
+        controller.setChatServer(server);
+        // There's no additional data required by the newly opened form.
+        Scene registerScreen = new Scene(root);
+
+        Stage stage;
+        stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
+
+        stage.setScene(registerScreen);
+        stage.show();
+    }
     @FXML
     private void login()
     {

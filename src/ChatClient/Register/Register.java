@@ -1,4 +1,4 @@
-package ChatClient;
+package ChatClient.Register;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,12 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Login extends Application {
-
+public class Register extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("login.fxml"));
-        primaryStage.setTitle("ChatSysteem: Login");
+        Parent root = FXMLLoader.load(getClass().getResource("Register.fxml"));
+        primaryStage.setTitle("ChatSysteem: Register");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

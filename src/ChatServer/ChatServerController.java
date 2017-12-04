@@ -20,4 +20,9 @@ public class ChatServerController extends UnicastRemoteObject implements IChatSe
     public IUser login(String username, String password) {
         return userRepo.login(username,password);
     }
+
+    @Override
+    public boolean register(String username, String password) throws RemoteException {
+        return userRepo.register(username, password);
+    }
 }
