@@ -46,4 +46,35 @@ public class ChatRepo implements IChatRepo {
         }
         return chats;
     }
+
+    @Override
+    public void createChat(int userID, int newChatUserId) {
+        String queryCreateChat = " insert into chat (name) value ('new chat')";
+        String queryJoinChat = " insert into user_chat (userID,chatID)"
+                + " values (?, ?)";
+        IConnection connection = new ConnectionManager();
+        Connection conn = connection.getConnection();
+        try {
+            PreparedStatement preparedStmt = conn.prepareStatement(queryCreateChat, Statement.RETURN_GENERATED_KEYS);
+            preparedStmt.execute();
+            ResultSet rs = preparedStmt.getGeneratedKeys();
+            int generatedKey = 0;
+            if (rs.next()) {
+                generatedKey = rs.getInt(1);
+            }
+            System.out.println(generatedKey);
+            PreparedStatement preparedStmt2 = conn.prepareStatement(queryJoinChat);
+            preparedStmt2.setInt (1, userID);
+            preparedStmt2.setInt (2, generatedKey);
+            preparedStmt2.execute();
+            PreparedStatement preparedStmt3 = conn.prepareStatement(queryJoinChat);
+            preparedStmt3.setInt (1, newChatUserId);
+            preparedStmt3.setInt (2, generatedKey);
+            preparedStmt3.execute();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
 }
