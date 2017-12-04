@@ -25,10 +25,11 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <TableView layoutX="4.0" layoutY="4.0" prefHeight="383.0" prefWidth="865.0">
+                  <TableView id="tv_chats" fx:id="tv_chats" layoutX="4.0" layoutY="4.0" prefHeight="383.0" prefWidth="865.0">
                     <columns>
-                      <TableColumn prefWidth="75.0" text="C1" />
-                      <TableColumn prefWidth="75.0" text="C2" />
+                        <TableColumn fx:id="tc_user" editable="false" prefWidth="342.0" text="user" />
+                      <TableColumn fx:id="tc_name" editable="false" prefWidth="280.0" text="chat name" />
+                      <TableColumn fx:id="tc_datecreated" editable="false" prefWidth="246.0" text="date created" />
                     </columns>
                   </TableView>
                   <Button layoutX="762.0" layoutY="387.0" mnemonicParsing="false" prefHeight="46.0" prefWidth="107.0" text="Open chat" />

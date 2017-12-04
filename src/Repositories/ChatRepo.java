@@ -37,7 +37,7 @@ public class ChatRepo implements IChatRepo {
             ResultSet rs = preparedStmt.executeQuery();
             while (rs.next()) {
                 chats.add(new Chat(rs.getString("name"),
-                        rs.getInt("ID"),rs.getDate("dateCreated"),
+                        rs.getInt("ID"),rs.getTimestamp("dateCreated"),
                         new User(rs.getInt("userID"),rs.getString("username"))));
             }
             conn.close();

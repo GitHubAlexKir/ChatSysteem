@@ -8,6 +8,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -18,6 +21,14 @@ import java.util.List;
 public class HomeController {
     @FXML
     private Text txt_username;
+    @FXML
+    private TableView<IChat> tv_chats;
+    @FXML
+    private TableColumn tc_user;
+    @FXML
+    private TableColumn tc_name;
+    @FXML
+    private TableColumn tc_datecreated;
     private IUser user;
     private IChatServerManager server;
     private List<IChat> chats;
@@ -29,14 +40,23 @@ public class HomeController {
         this.user = user;
         this.server = server;
         this.txt_username.setText("Welcome back " + user.getUsername());
+
         loadChats();
     }
 
     private void loadChats()
     {
+        tv_chats.getItems().clear();
+        tc_user.setCellValueFactory(new PropertyValueFactory<IChat, String>("user_Name"));
+        tc_name.setCellValueFactory(new PropertyValueFactory<IChat,String>("name"));
+        tc_datecreated.setCellValueFactory(new PropertyValueFactory<IChat,String>("dateCreated"));
         try {
             chats = server.getChats(user.getID());
-            System.out.println(chats.get(0).getUser().getUsername());
+            if (!chats.isEmpty()) {
+                for (IChat i : chats) {
+                    tv_chats.getItems().add(i);
+                }
+            }
         } catch (RemoteException e) {
             e.printStackTrace();
         }
