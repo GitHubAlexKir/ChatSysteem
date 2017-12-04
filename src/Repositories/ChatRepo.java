@@ -1,7 +1,7 @@
 package Repositories;
 
-import Classes.Chat;
-import Classes.User;
+import Domains.Chat;
+import Domains.User;
 import Interfaces.IChat;
 import Interfaces.IChatRepo;
 import Interfaces.IConnection;
@@ -11,10 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ChatRepo implements IChatRepo {
-    private IConnection connection;
 
     public ChatRepo() {
-        this.connection = new ConnectionManager();
+
     }
 
     @Override
@@ -23,7 +22,7 @@ public class ChatRepo implements IChatRepo {
         String getChats = "Select c.ID,c.name,c.dateCreated,u.ID as userID, u.username from chat c\n" +
                 "join user_chat uc on uc.ChatID=c.ID\n" +
                 "join user u on u.ID=uc.UserID\n" +
-                "Where c.ID = (Select c.ID from chat c\n" +
+                "Where c.ID in (Select c.ID from chat c\n" +
                 "join user_chat uc on uc.ChatID=c.ID\n" +
                 "join user u on u.ID=uc.UserID\n" +
                 "where u.ID = ?) and u.ID != ?";

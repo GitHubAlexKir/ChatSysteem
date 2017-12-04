@@ -1,6 +1,7 @@
 package ChatClient.Home;
 
 import ChatClient.Login.LoginController;
+import ChatClient.NewChat.NewChatController;
 import Interfaces.IChat;
 import Interfaces.IChatServerManager;
 import Interfaces.IUser;
@@ -40,7 +41,6 @@ public class HomeController {
         this.user = user;
         this.server = server;
         this.txt_username.setText("Welcome back " + user.getUsername());
-
         loadChats();
     }
 
@@ -60,6 +60,27 @@ public class HomeController {
         } catch (RemoteException e) {
             e.printStackTrace();
         }
+    }
+
+    @FXML
+    private void toNewChatScreen()
+    {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../NewChat/NewChat.fxml"));
+
+        Parent root = null;
+        try {
+            root = (Parent)fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        NewChatController controller = fxmlLoader.<NewChatController>getController();
+        controller.setup(user,server);
+        // There's no additional data required by the newly opened form.
+        Scene registerScreen = new Scene(root);
+        Stage stage;
+        stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
+        stage.setScene(registerScreen);
+        stage.show();
     }
     @FXML
     private void logout()  {

@@ -1,11 +1,10 @@
-package Classes;
+package Domains;
 
 import Interfaces.IChat;
 import Interfaces.IUser;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 public class Chat implements IChat, Serializable {
     private String name;

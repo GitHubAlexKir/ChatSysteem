@@ -1,4 +1,4 @@
-package Classes;
+package Domains;
 
 import Interfaces.IUser;
 

@@ -1,6 +1,5 @@
 package ChatServer;
 
-import Classes.User;
 import Interfaces.*;
 import Repositories.ChatRepo;
 import Repositories.UserRepo;
@@ -31,5 +30,15 @@ public class ChatServerController extends UnicastRemoteObject implements IChatSe
     @Override
     public List<IChat> getChats(int userID) throws RemoteException {
         return chatRepo.getChats(userID);
+    }
+
+    @Override
+    public void createChat(int userID, int newChatUserId) throws RemoteException {
+        chatRepo.createChat(userID,newChatUserId);
+    }
+
+    @Override
+    public List<IUser> getNewChats(int id) throws RemoteException {
+        return userRepo.getNewChats(id);
     }
 }

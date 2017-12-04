@@ -1,18 +1,18 @@
 package Repositories;
 
-import Classes.User;
+import Domains.User;
 import Interfaces.IConnection;
 import Interfaces.IUser;
 import Interfaces.IUserRepo;
-import sun.security.provider.MD5;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UserRepo implements IUserRepo {
-    private IConnection connection;
 
     public UserRepo() {
-        this.connection = new ConnectionManager();
+
     }
 
     @Override
@@ -76,5 +76,26 @@ public class UserRepo implements IUserRepo {
         else {
             return false;
         }
+    }
+
+    @Override
+    public List<IUser> getNewChats(int id) {
+        List<IUser> users = new ArrayList<>();
+        try {
+
+            String query = "SELECT * FROM user WHERE id != ?;";
+            IConnection connection = new ConnectionManager();
+            Connection conn = connection.getConnection();
+            PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            preparedStmt.setInt(1,id);
+            ResultSet rs = preparedStmt.executeQuery();
+            while (rs.next()) {
+                users.add(new User(rs.getInt("id"),rs.getString("username")));
+            }
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
     }
 }
