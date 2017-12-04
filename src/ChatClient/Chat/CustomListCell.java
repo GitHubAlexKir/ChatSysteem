@@ -8,7 +8,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 
 public class CustomListCell extends ListCell<IMessage> {
-    private Font _itemFont = Font.font("arial");
+    private String username;
+    private double width;
+    public CustomListCell(String username, double width) {
+        this.username = username;
+        this.width = width;
+    }
 
     @Override
     protected void updateItem(IMessage item, boolean empty) {
@@ -18,8 +23,9 @@ public class CustomListCell extends ListCell<IMessage> {
         if (!empty) {
             pane = new Pane();
             if (item.getReceiver()) {
-                final Text leftText = new Text(item.getContent());
-                leftText.setFont(_itemFont);
+                final Text leftText = new Text(username + ": " + item.getContent());
+                leftText.setFont(Font.font("STYLE_BOLD",16));
+                //leftText.setFont(_itemFont);
                 leftText.setTextOrigin(VPos.TOP);
                 leftText.relocate(0, 0);
                 pane.getChildren().add(leftText);
@@ -28,10 +34,11 @@ public class CustomListCell extends ListCell<IMessage> {
             {
                 // right-aligned text at position 8em
                 final Text rightText = new Text(item.getContent());
-                rightText.setFont(_itemFont);
+                //rightText.setFont(_itemFont);
+                rightText.setFont(Font.font(14));
                 rightText.setTextOrigin(VPos.TOP);
-                final double width = rightText.getLayoutBounds().getWidth();
-                rightText.relocate(8 *  width, 0);
+                double text = rightText.getLayoutBounds().getWidth();
+                rightText.relocate(width - text - 25, 0);
                 pane.getChildren().add(rightText);
             }
         }

@@ -1,5 +1,6 @@
 package ChatServer;
 
+import Domains.Message;
 import Interfaces.*;
 import Repositories.ChatRepo;
 import Repositories.MessageRepo;
@@ -78,6 +79,23 @@ public class ChatServerController extends UnicastRemoteObject implements IChatSe
 
     @Override
     public void sendMessage(int userId, int chatId, String content) throws RemoteException {
+        if (!timerPause)
+        {
+            for (IListener l:listeners
+                 ) {
+                if (l.getChatId() == chatId)
+                {
+                    if (l.getUserId() == userId)
+                    {
+                        l.addMessage(new Message(0,content,false));
+                    }
+                    else
+                    {
+                        l.addMessage(new Message(0,content,true));
+                    }
+                }
+            }
+        }
         messageRepo.sendMessage(userId,chatId,content);
     }
 

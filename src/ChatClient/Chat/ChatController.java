@@ -1,8 +1,10 @@
 package ChatClient.Chat;
 
 import ChatClient.Home.HomeController;
+import Domains.Message;
 import Interfaces.*;
 import javafx.animation.AnimationTimer;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -31,7 +33,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     private IChat chat;
     private List<IMessage> messages = new ArrayList<>();
     private AnimationTimer messageTimer;
-
+    boolean autoScroll = false;
 
 
 
@@ -45,11 +47,14 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         messageTimer.start();
     }
     private void updateListViewMessages() {
-        lv_messages.setCellFactory(t -> new CustomListCell());
+        lv_messages.setCellFactory(t -> new CustomListCell(chat.getUser_Name(),lv_messages.getWidth()));
         lv_messages.getItems().clear();
         for (IMessage message:messages
                 ) {
             lv_messages.getItems().add(message);
+        }
+        if (autoScroll) {
+            Platform.runLater(() -> lv_messages.scrollTo(lv_messages.getItems().size() - 1));
         }
     }
     public void setup(IUser user, IChatServerManager server, IChat chat)
@@ -57,6 +62,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         this.user = user;
         this.server = server;
         this.chat = chat;
+        this.txt_username.setText(chat.getUser_Name());
         try {
             server.addListener(this);
         } catch (RemoteException e) {
@@ -76,10 +82,20 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
             txt_message.clear();
         }
     }
-
+    @FXML
+    private void toggleAutoScroll()
+    {
+        this.autoScroll = !this.autoScroll;
+    }
     @FXML
     private void toHomeScreen()
     {
+        try {
+            server.removeListener(this);
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
+        messageTimer.stop();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Home/Home.fxml"));
         Parent root = null;
         try {
@@ -115,5 +131,10 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     @Override
     public List<IMessage> getchatMessages() {
         return this.messages;
+    }
+
+    @Override
+    public void addMessage(Message message) throws RemoteException {
+        this.messages.add(message);
     }
 }
