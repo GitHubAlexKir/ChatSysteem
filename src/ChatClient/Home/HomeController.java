@@ -1,5 +1,6 @@
 package ChatClient.Home;
 
+import ChatClient.Chat.ChatController;
 import ChatClient.Login.LoginController;
 import ChatClient.NewChat.NewChatController;
 import Interfaces.IChat;
@@ -33,6 +34,7 @@ public class HomeController {
     private IUser user;
     private IChatServerManager server;
     private List<IChat> chats;
+    private IChat selectedChat;
     public HomeController() {
     }
 
@@ -61,7 +63,40 @@ public class HomeController {
             e.printStackTrace();
         }
     }
+    @FXML
+    private void selectedChat()
+    {
+        if (tv_chats.getSelectionModel().getSelectedItem() != null)
+        {
+            selectedChat = tv_chats.getSelectionModel().getSelectedItem();
+        }
+        else
+        {
+            selectedChat = null;
+        }
+    }
+    @FXML
+    private void toChatScreen()
+    {
+        if (selectedChat != null) {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Chat/Chat.fxml"));
 
+            Parent root = null;
+            try {
+                root = (Parent) fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ChatController controller = fxmlLoader.<ChatController>getController();
+            controller.setup(user, server, selectedChat);
+            // There's no additional data required by the newly opened form.
+            Scene registerScreen = new Scene(root);
+            Stage stage;
+            stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
+            stage.setScene(registerScreen);
+            stage.show();
+        }
+    }
     @FXML
     private void toNewChatScreen()
     {
