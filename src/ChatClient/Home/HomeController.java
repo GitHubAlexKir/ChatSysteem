@@ -1,6 +1,7 @@
 package ChatClient.Home;
 
 import ChatClient.Login.LoginController;
+import Interfaces.IChat;
 import Interfaces.IChatServerManager;
 import Interfaces.IUser;
 import javafx.fxml.FXML;
@@ -11,13 +12,15 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.rmi.RemoteException;
+import java.util.List;
 
 public class HomeController {
     @FXML
     private Text txt_username;
     private IUser user;
     private IChatServerManager server;
-
+    private List<IChat> chats;
     public HomeController() {
     }
 
@@ -26,6 +29,17 @@ public class HomeController {
         this.user = user;
         this.server = server;
         this.txt_username.setText("Welcome back " + user.getUsername());
+        loadChats();
+    }
+
+    private void loadChats()
+    {
+        try {
+            chats = server.getChats(user.getID());
+            System.out.println(chats.get(0).getUser().getUsername());
+        } catch (RemoteException e) {
+            e.printStackTrace();
+        }
     }
     @FXML
     private void logout()  {
