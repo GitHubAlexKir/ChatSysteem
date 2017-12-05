@@ -12,10 +12,6 @@ import java.util.List;
 
 public class ChatRepo implements IChatRepo {
 
-    public ChatRepo() {
-
-    }
-
     @Override
     public List<IChat> getChats(int userId) {
         List<IChat> chats = new ArrayList<>();

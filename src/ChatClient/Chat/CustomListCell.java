@@ -27,7 +27,7 @@ public class CustomListCell extends ListCell<IMessage> {
                 leftText.setFont(Font.font("STYLE_BOLD",16));
                 //leftText.setFont(_itemFont);
                 leftText.setTextOrigin(VPos.TOP);
-                leftText.relocate(0, 0);
+                leftText.relocate(10, 0);
                 pane.getChildren().add(leftText);
             }
             else
@@ -38,7 +38,7 @@ public class CustomListCell extends ListCell<IMessage> {
                 rightText.setFont(Font.font(14));
                 rightText.setTextOrigin(VPos.TOP);
                 double text = rightText.getLayoutBounds().getWidth();
-                rightText.relocate(width - text - 25, 0);
+                rightText.relocate(width - text - 30, 0);
                 pane.getChildren().add(rightText);
             }
         }

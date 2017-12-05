@@ -1,4 +1,4 @@
-package ChatServer;
+package ChatManager;
 
 import Domains.Message;
 import Interfaces.*;
@@ -7,20 +7,19 @@ import Repositories.MessageRepo;
 import Repositories.UserRepo;
 
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
-public class ChatServerController extends UnicastRemoteObject implements IChatServerManager {
+public class ChatManager extends UnicastRemoteObject implements IChatServerManager {
     private IUserRepo userRepo;
     private IChatRepo chatRepo;
     private IMessageRepo messageRepo;
     private List<IListener> listeners = new ArrayList<>();
     private Timer messageTimer;
     private boolean timerPause = true;
-    public ChatServerController() throws RemoteException {
+    private IChatBotManager chatBotManager;
+    public ChatManager() throws RemoteException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         userRepo = new UserRepo();
         chatRepo = new ChatRepo();
@@ -51,7 +50,6 @@ public class ChatServerController extends UnicastRemoteObject implements IChatSe
             }
         }
     }
-
     @Override
     public IUser login(String username, String password) {
         return userRepo.login(username,password);
@@ -100,6 +98,11 @@ public class ChatServerController extends UnicastRemoteObject implements IChatSe
     }
 
     @Override
+    public String askQuestion(String question) throws RemoteException {
+        return chatBotManager.askQuestion(question);
+    }
+
+    @Override
     public void addListener(IListener listener) {
         if (timerPause) {
             timerPause = false;
@@ -110,5 +113,9 @@ public class ChatServerController extends UnicastRemoteObject implements IChatSe
     @Override
     public void removeListener(IListener listener) {
         listeners.remove(listener);
+    }
+
+    public void setChatBotManager(IChatBotManager chatBotManager) {
+        this.chatBotManager = chatBotManager;
     }
 }

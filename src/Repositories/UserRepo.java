@@ -11,9 +11,6 @@ import java.util.List;
 
 public class UserRepo implements IUserRepo {
 
-    public UserRepo() {
-
-    }
 
     @Override
     public IUser login(String username, String password) {

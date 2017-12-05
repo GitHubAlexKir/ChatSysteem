@@ -1,6 +1,7 @@
 package ChatClient.Home;
 
 import ChatClient.Chat.ChatController;
+import ChatClient.ChatBot.ChatBotController;
 import ChatClient.Login.LoginController;
 import ChatClient.NewChat.NewChatController;
 import Interfaces.IChat;
@@ -96,6 +97,27 @@ public class HomeController {
             stage.setScene(registerScreen);
             stage.show();
         }
+    }
+    @FXML
+    private void toChatBotScreen()
+    {
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../ChatBot/ChatBot.fxml"));
+
+            Parent root = null;
+            try {
+                root = (Parent) fxmlLoader.load();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            ChatBotController controller = fxmlLoader.<ChatBotController>getController();
+            controller.setup(user, server);
+            // There's no additional data required by the newly opened form.
+            Scene registerScreen = new Scene(root);
+            Stage stage;
+            stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
+            stage.setScene(registerScreen);
+            stage.show();
+
     }
     @FXML
     private void toNewChatScreen()

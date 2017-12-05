@@ -11,8 +11,6 @@ import java.util.List;
 
 public class MessageRepo implements IMessageRepo {
 
-    public MessageRepo() {
-    }
 
     @Override
     public void sendMessage(int userId, int chatId, String content) {

@@ -33,6 +33,7 @@
                     </columns>
                   </TableView>
                   <Button layoutX="762.0" layoutY="387.0" mnemonicParsing="false" onAction="#toChatScreen" prefHeight="46.0" prefWidth="107.0" text="Open chat" />
+                  <Button layoutX="639.0" layoutY="387.0" mnemonicParsing="false" onAction="#toChatBotScreen" prefHeight="46.0" prefWidth="107.0" text="Open ChatBot" />
                </children>
             </AnchorPane>
         </items>
