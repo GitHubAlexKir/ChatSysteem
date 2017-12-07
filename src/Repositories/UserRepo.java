@@ -80,11 +80,26 @@ public class UserRepo implements IUserRepo {
         List<IUser> users = new ArrayList<>();
         try {
 
-            String query = "SELECT * FROM user WHERE id != ?;";
+            String query = "Select * from user u WHERE u.ID NOT IN (\n" +
+                    "Select u.ID from chat c\n" +
+                    "join user_chat uc on uc.ChatID=c.ID\n" +
+                    "join user u on u.ID=uc.UserID\n" +
+                    "Where c.ID in \n" +
+                    "(\n" +
+                    "Select c.ID from chat c\n" +
+                    "join user_chat uc on uc.ChatID=c.ID\n" +
+                    "join user u on u.ID=uc.UserID\n" +
+                    "where u.ID = ?\n" +
+                    ")\n" +
+                    "and u.ID != ?\n" +
+                    ")\n" +
+                    "and u.ID != ?";
             IConnection connection = new ConnectionManager();
             Connection conn = connection.getConnection();
             PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt(1,id);
+            preparedStmt.setInt(2,id);
+            preparedStmt.setInt(3,id);
             ResultSet rs = preparedStmt.executeQuery();
             while (rs.next()) {
                 users.add(new User(rs.getInt("id"),rs.getString("username")));
