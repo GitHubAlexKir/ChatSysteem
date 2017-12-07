@@ -1,4 +1,4 @@
-package ChatBotManager;
+package ChatBotServer;
 
 import Interfaces.IChatBotManager;
 

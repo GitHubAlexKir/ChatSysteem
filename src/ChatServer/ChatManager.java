@@ -1,4 +1,4 @@
-package ChatManager;
+package ChatServer;
 
 import Domains.Message;
 import Interfaces.*;
@@ -7,7 +7,6 @@ import Repositories.MessageRepo;
 import Repositories.UserRepo;
 
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
 

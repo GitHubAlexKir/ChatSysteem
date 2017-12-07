@@ -13,7 +13,6 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
-import java.io.PrintStream;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -33,7 +32,7 @@ public class LoginController {
         try {
             System.setProperty("java.rmi.server.hostname","127.0.0.1");
             this.registry = locateRegistry();
-            this.server = (IChatServerManager) registry.lookup("ChatManager");
+            this.server = (IChatServerManager) registry.lookup("ChatServer");
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {

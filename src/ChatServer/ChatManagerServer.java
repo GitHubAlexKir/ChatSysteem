@@ -1,4 +1,4 @@
-package ChatManager;
+package ChatServer;
 
 import Interfaces.IChatBotManager;
 
@@ -15,7 +15,7 @@ public class ChatManagerServer {
     private int portNumber = 1099;
     private String ip = "127.0.0.1";
     // Set binding name for student administration
-    private String bindingName = "ChatManager";
+    private String bindingName = "ChatServer";
 
     // References to registry and student administration
     private static Registry registry = null;
@@ -29,7 +29,7 @@ public class ChatManagerServer {
         System.out.println("ip : " + ip);
         System.out.println("Server: Port number " + portNumber);
 
-        // Create ChatManager
+        // Create ChatServer
         try {
             chatManager = new ChatManager();
         } catch (RemoteException ex) {
@@ -66,7 +66,7 @@ public class ChatManagerServer {
         Scanner scan = new Scanner(System.in);
         System.out.println("enter key when you have started ChatBotmanagerServer");
         String myLine = scan.nextLine();
-        chatManager.setChatBotManager((IChatBotManager)registry.lookup("ChatBotManager"));
+        chatManager.setChatBotManager((IChatBotManager)registry.lookup("ChatBotServer"));
 
 }
 

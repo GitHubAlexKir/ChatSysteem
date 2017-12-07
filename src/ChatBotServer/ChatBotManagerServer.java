@@ -1,4 +1,4 @@
-package ChatBotManager;
+package ChatBotServer;
 
 import java.io.IOException;
 import java.rmi.RemoteException;
@@ -9,7 +9,7 @@ public class ChatBotManagerServer {
     private int portNumber = 1099;
     private String ip = "127.0.0.1";
     // Set binding name for student administration
-    private String bindingName = "ChatBotManager";
+    private String bindingName = "ChatBotServer";
 
     // References to registry and student administration
     private Registry registry = null;
@@ -23,7 +23,7 @@ public class ChatBotManagerServer {
         System.out.println("ip : " + ip);
         System.out.println("Server: Port number " + portNumber);
 
-        // Create ChatManager
+        // Create ChatServer
         try {
             chatBotManager = new ChatBotManager();
         } catch (RemoteException ex) {
