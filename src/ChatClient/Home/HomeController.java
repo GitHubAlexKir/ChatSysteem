@@ -46,7 +46,7 @@ public class HomeController {
         this.txt_username.setText("Welcome back " + user.getUsername());
         loadChats();
     }
-
+    @FXML
     private void loadChats()
     {
         tv_chats.getItems().clear();

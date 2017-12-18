@@ -18,10 +18,11 @@
         <items>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="27.0" prefWidth="875.0">
                <children>
-                  <Hyperlink layoutX="8.0" layoutY="3.0" onAction="#logout" text="Log out" />
+                  <Hyperlink layoutX="14.0" layoutY="5.0" onAction="#logout" text="Log out" />
                   <Text fx:id="txt_username" layoutX="85.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Welcome back User." />
                   <Button layoutX="725.0" layoutY="2.0" mnemonicParsing="false" onAction="#toNewChatScreen" prefHeight="29.0" prefWidth="143.0" text="Create new Chat" />
-                  <Button layoutX="586.0" layoutY="6.0" mnemonicParsing="false" onAction="#messageDeveloper" text="contact developer" />
+                  <Button layoutX="382.0" layoutY="6.0" mnemonicParsing="false" onAction="#messageDeveloper" text="contact developer" />
+                  <Button layoutX="620.0" layoutY="2.0" mnemonicParsing="false" onAction="#loadChats" prefHeight="29.0" prefWidth="89.0" text="Refresh Chats" />
                </children>
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
