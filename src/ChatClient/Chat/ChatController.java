@@ -152,7 +152,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendErrorMail(user.getID(),e.toString());
+                server.sendMail(user.getID(),e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");

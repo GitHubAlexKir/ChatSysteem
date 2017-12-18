@@ -80,7 +80,7 @@ public class RegisterController {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendErrorMail(0,e.toString());
+                server.sendMail(0,e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");

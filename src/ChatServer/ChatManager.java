@@ -36,7 +36,7 @@ public class ChatManager extends UnicastRemoteObject implements IChatServerManag
             }
         }, 1000 , 50);
         setupMail();
-        sendErrorMail(1,"test");
+        sendMail(1,"Server started");
     }
 
     private void UpdateListeners() {
@@ -130,16 +130,16 @@ public class ChatManager extends UnicastRemoteObject implements IChatServerManag
                 });
     }
     @Override
-    public void sendErrorMail(int userID, String exception) throws RemoteException {
+    public void sendMail(int userID, String text) throws RemoteException {
         try {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress("chatsysteem@gmail.com"));
             message.setRecipients(MimeMessage.RecipientType.TO,
                     InternetAddress.parse("chatSysteem@gmail.com"));
-            message.setSubject("Program ChatSysteem: Exception from userID " + userID);
-            message.setText(exception);
+            message.setSubject("Program ChatSysteem: Exception/message from userID " + userID);
+            message.setText(text);
             Transport.send(message);
-            System.out.println("Error mail send");
+            System.out.println("mail send");
         } catch (MessagingException e) {
             throw new RuntimeException(e);
         }

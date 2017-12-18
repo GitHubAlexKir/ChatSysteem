@@ -11,10 +11,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -22,6 +19,7 @@ import javafx.stage.Stage;
 import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.List;
+import java.util.Optional;
 
 public class HomeController {
     @FXML
@@ -85,6 +83,31 @@ public class HomeController {
             selectedChat = null;
         }
     }
+
+    @FXML
+    private void messageDeveloper()
+    {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Message to Developer");
+        dialog.setHeaderText("If you have found a bug or want to ask anything feel free to sent me a message");
+        dialog.setContentText("Please enter your message:");
+        // Traditional way to get the response value.
+        Optional<String> result = dialog.showAndWait();
+        if (result.isPresent()) {
+            try {
+                server.sendMail(user.getID(),result.get());
+            } catch (RemoteException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
+        }
+    }
     @FXML
     private void toChatScreen()
     {
@@ -96,7 +119,7 @@ public class HomeController {
                 root = (Parent) fxmlLoader.load();
             } catch (IOException e) {
                 try {
-                    server.sendErrorMail(user.getID(),e.toString());
+                    server.sendMail(user.getID(),e.toString());
                 } catch (RemoteException e1) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");
@@ -127,7 +150,7 @@ public class HomeController {
                 root = (Parent) fxmlLoader.load();
             } catch (IOException e) {
                 try {
-                    server.sendErrorMail(user.getID(),e.toString());
+                    server.sendMail(user.getID(),e.toString());
                 } catch (RemoteException e1) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");
@@ -159,7 +182,7 @@ public class HomeController {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendErrorMail(user.getID(),e.toString());
+                server.sendMail(user.getID(),e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -191,7 +214,7 @@ public class HomeController {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendErrorMail(user.getID(),e.toString());
+                server.sendMail(user.getID(),e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
