@@ -11,7 +11,7 @@ public class Login extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception{
         Parent root = FXMLLoader.load(getClass().getResource("Login.fxml"));
-        primaryStage.setTitle("ChatSysteem: Login");
+        primaryStage.setTitle("ChatSysteem");
         primaryStage.setScene(new Scene(root));
         primaryStage.show();
     }

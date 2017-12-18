@@ -14,6 +14,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+import javax.swing.*;
 import java.io.IOException;
 import java.io.Serializable;
 import java.rmi.RemoteException;
@@ -28,6 +29,8 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     private ListView lv_messages;
     @FXML
     private TextArea txt_message;
+    @FXML
+    private Text txt_chat;
     private IUser user;
     private IChatServerManager server;
     private IChat chat;
@@ -86,6 +89,13 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     private void toggleAutoScroll()
     {
         this.autoScroll = !this.autoScroll;
+    }
+    @FXML
+    private void changeChatName()
+    {
+        String test1= JOptionPane.showInputDialog("Please input mark for test 1: ");
+        System.out.println(test1);
+        txt_chat.setText(test1);
     }
     @FXML
     private void toHomeScreen()
