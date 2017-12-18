@@ -9,6 +9,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
@@ -66,10 +68,18 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         this.server = server;
         this.chat = chat;
         this.txt_username.setText(chat.getUser_Name());
+        this.txt_chat.setText(chat.getName());
         try {
             server.addListener(this);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No connection to Server");
+            alert.setContentText("The server is unavailable at this time, try again later.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                }
+            });
         }
     }
     @FXML
@@ -80,7 +90,14 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
             try {
                 server.sendMessage(user.getID(),chat.getID(),txt_message.getText());
             } catch (RemoteException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
             }
             txt_message.clear();
         }
@@ -93,9 +110,25 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     @FXML
     private void changeChatName()
     {
-        String test1= JOptionPane.showInputDialog("Please input mark for test 1: ");
-        System.out.println(test1);
-        txt_chat.setText(test1);
+        String chatName = JOptionPane.showInputDialog("Type in a new Chat name: ");
+        if (chatName != "" && chatName != null)
+        {
+            txt_chat.setText(chatName);
+            try {
+                server.renameChat(this.chat.getID(),chatName);
+            } catch (RemoteException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
+        }
+
+
     }
     @FXML
     private void toHomeScreen()
@@ -103,7 +136,14 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         try {
             server.removeListener(this);
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No connection to Server");
+            alert.setContentText("The server is unavailable at this time, try again later.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                }
+            });
         }
         messageTimer.stop();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Home/Home.fxml"));
@@ -111,7 +151,18 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         try {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                server.sendErrorMail(user.getID(),e.toString());
+            } catch (RemoteException e1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
         controller.setSettings(user,server);

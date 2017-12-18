@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -61,7 +63,14 @@ public class HomeController {
                 }
             }
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No connection to Server");
+            alert.setContentText("The server is unavailable at this time, try again later.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                }
+            });
         }
     }
     @FXML
@@ -86,7 +95,18 @@ public class HomeController {
             try {
                 root = (Parent) fxmlLoader.load();
             } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    server.sendErrorMail(user.getID(),e.toString());
+                } catch (RemoteException e1) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("No connection to Server");
+                    alert.setContentText("The server is unavailable at this time, try again later.");
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                        }
+                    });
+                }
             }
             ChatController controller = fxmlLoader.<ChatController>getController();
             controller.setup(user, server, selectedChat);
@@ -99,15 +119,25 @@ public class HomeController {
         }
     }
     @FXML
-    private void toChatBotScreen()
-    {
+    private void toChatBotScreen() {
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../ChatBot/ChatBot.fxml"));
 
             Parent root = null;
             try {
                 root = (Parent) fxmlLoader.load();
             } catch (IOException e) {
-                e.printStackTrace();
+                try {
+                    server.sendErrorMail(user.getID(),e.toString());
+                } catch (RemoteException e1) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("No connection to Server");
+                    alert.setContentText("The server is unavailable at this time, try again later.");
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                        }
+                    });
+                }
             }
             ChatBotController controller = fxmlLoader.<ChatBotController>getController();
             controller.setup(user, server);
@@ -128,7 +158,18 @@ public class HomeController {
         try {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                server.sendErrorMail(user.getID(),e.toString());
+            } catch (RemoteException e1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
         }
         NewChatController controller = fxmlLoader.<NewChatController>getController();
         controller.setup(user,server);
@@ -140,7 +181,7 @@ public class HomeController {
         stage.show();
     }
     @FXML
-    private void logout()  {
+    private void logout() {
         // Set the next "page" (scene) to display.
         // Note that an incorrect path will result in unexpected NullPointer exceptions!
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("../Login/Login.fxml"));
@@ -149,16 +190,24 @@ public class HomeController {
         try {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                server.sendErrorMail(user.getID(),e.toString());
+            } catch (RemoteException e1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
         }
         LoginController controller = fxmlLoader.<LoginController>getController();
-
         // There's no additional data required by the newly opened form.
         Scene registerScreen = new Scene(root);
-
         Stage stage;
         stage = (Stage) txt_username.getScene().getWindow(); // Weird backwards logic trick to get the current scene window.
-
         stage.setScene(registerScreen);
         stage.show();
     }

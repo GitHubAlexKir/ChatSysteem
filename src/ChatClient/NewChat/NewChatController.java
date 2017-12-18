@@ -7,6 +7,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -51,7 +53,14 @@ public class NewChatController {
                 }
             }
         } catch (RemoteException e) {
-            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No connection to Server");
+            alert.setContentText("The server is unavailable at this time, try again later.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                }
+            });
         }
     }
     @FXML
@@ -63,7 +72,14 @@ public class NewChatController {
                 server.createChat(this.user.getID(),selectedUser.getID());
                 toHomeScreen();
             } catch (RemoteException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
             }
         }
     }
@@ -93,7 +109,18 @@ public class NewChatController {
         try {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                server.sendErrorMail(user.getID(),e.toString());
+            } catch (RemoteException e1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
         controller.setSettings(user,server);

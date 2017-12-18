@@ -8,6 +8,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -33,14 +35,16 @@ public class LoginController {
             System.setProperty("java.rmi.server.hostname","127.0.0.1");
             this.registry = locateRegistry();
             this.server = (IChatServerManager) registry.lookup("ChatServer");
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NotBoundException e) {
-            e.printStackTrace();
+        } catch (SQLException | IOException | ClassNotFoundException | NotBoundException e) {
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No connection to Server");
+            alert.setContentText("The server is unavailable at this time, try again later.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                }
+            });
+            this.server = null;
         }
 
     }
@@ -98,7 +102,7 @@ public class LoginController {
     @FXML
     private void login()
     {
-        if (!txt_username.getText().trim().isEmpty() && !txt_password.getText().trim().isEmpty()) {
+        if (!txt_username.getText().trim().isEmpty() && !txt_password.getText().trim().isEmpty() && server != null) {
             try {
                 user = server.login(txt_username.getText(),txt_password.getText());
                 if (user != null){
@@ -110,7 +114,14 @@ public class LoginController {
                     System.out.println("failed");
                 }
             } catch (RemoteException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
             }
         }
 
@@ -121,8 +132,14 @@ public class LoginController {
             return LocateRegistry.getRegistry("127.0.0.1", 1099);
         }
         catch (RemoteException ex) {
-            System.out.println("Client: Cannot locate registry");
-            System.out.println("Client: RemoteException: " + ex.getMessage());
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Error");
+            alert.setHeaderText("No connection to Server");
+            alert.setContentText("The server is unavailable at this time, try again later.");
+            alert.showAndWait().ifPresent(rs -> {
+                if (rs == ButtonType.OK) {
+                }
+            });
             return null;
         }
     }

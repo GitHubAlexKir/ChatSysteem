@@ -72,4 +72,21 @@ public class ChatRepo implements IChatRepo {
         }
 
     }
+
+    @Override
+    public void renameChat(int chatId, String chatName) {
+        String queryRenameChat = "update chat set name = ? where id = ?;";
+        IConnection connection = new ConnectionManager();
+        Connection conn = connection.getConnection();
+        try {
+
+            PreparedStatement preparedStmt = conn.prepareStatement(queryRenameChat);
+            preparedStmt.setString (1, chatName);
+            preparedStmt.setInt (2, chatId);
+            preparedStmt.execute();
+            conn.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

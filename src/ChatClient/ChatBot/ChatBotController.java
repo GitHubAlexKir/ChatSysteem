@@ -10,6 +10,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.scene.text.Text;
@@ -63,7 +65,14 @@ public class ChatBotController {
                 String answer = server.askQuestion(txt_message.getText());
                 addMessage(new Message(1,answer,true));
             } catch (RemoteException e) {
-                e.printStackTrace();
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
             }
             txt_message.clear();
         }
@@ -76,7 +85,18 @@ public class ChatBotController {
         try {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                server.sendErrorMail(user.getID(),e.toString());
+            } catch (RemoteException e1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
         controller.setSettings(user,server);

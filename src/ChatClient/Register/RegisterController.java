@@ -6,6 +6,8 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -53,8 +55,15 @@ public class RegisterController {
                 else {
                     showMessageDialog(null, "Username is already taken.");
                 }
-            } catch (RemoteException e) {
-                e.printStackTrace();
+            } catch (RemoteException  | NullPointerException e) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
             }
         }
     }
@@ -70,7 +79,18 @@ public class RegisterController {
         try {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
-            e.printStackTrace();
+            try {
+                server.sendErrorMail(0,e.toString());
+            } catch (RemoteException e1) {
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("Error");
+                alert.setHeaderText("No connection to Server");
+                alert.setContentText("The server is unavailable at this time, try again later.");
+                alert.showAndWait().ifPresent(rs -> {
+                    if (rs == ButtonType.OK) {
+                    }
+                });
+            }
         }
         LoginController controller = fxmlLoader.<LoginController>getController();
         Scene loginScreen = new Scene(root);

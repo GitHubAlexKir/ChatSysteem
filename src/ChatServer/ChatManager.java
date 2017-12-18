@@ -5,7 +5,10 @@ import Interfaces.*;
 import Repositories.ChatRepo;
 import Repositories.MessageRepo;
 import Repositories.UserRepo;
-
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.*;
@@ -18,6 +21,7 @@ public class ChatManager extends UnicastRemoteObject implements IChatServerManag
     private Timer messageTimer;
     private boolean timerPause = true;
     private IChatBotManager chatBotManager;
+    private Session session;
     public ChatManager() throws RemoteException {
         System.setProperty("java.rmi.server.hostname", "127.0.0.1");
         userRepo = new UserRepo();
@@ -31,6 +35,8 @@ public class ChatManager extends UnicastRemoteObject implements IChatServerManag
 
             }
         }, 1000 , 50);
+        setupMail();
+        sendErrorMail(1,"test");
     }
 
     private void UpdateListeners() {
@@ -99,6 +105,44 @@ public class ChatManager extends UnicastRemoteObject implements IChatServerManag
     @Override
     public String askQuestion(String question) throws RemoteException {
         return chatBotManager.askQuestion(question);
+    }
+
+    @Override
+    public void renameChat(int chatId, String chatName) throws RemoteException {
+        this.chatRepo.renameChat(chatId,chatName);
+    }
+    private void setupMail()
+    {
+        final String username = "chatsysteem@gmail.com";
+        final String password = "Wachtwoord3";
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.socketFactory.port", "465");
+        props.put("mail.smtp.socketFactory.class",
+                "javax.net.ssl.SSLSocketFactory");
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.port", "465");
+        session = Session.getDefaultInstance(props,
+                new Authenticator() {
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username,password);
+                    }
+                });
+    }
+    @Override
+    public void sendErrorMail(int userID, String exception) throws RemoteException {
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress("chatsysteem@gmail.com"));
+            message.setRecipients(MimeMessage.RecipientType.TO,
+                    InternetAddress.parse("chatSysteem@gmail.com"));
+            message.setSubject("Program ChatSysteem: Exception from userID " + userID);
+            message.setText(exception);
+            Transport.send(message);
+            System.out.println("Error mail send");
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -64,9 +64,10 @@ public class ChatManagerServer {
         System.out.println("SERVER USING REGISTRY");
         ChatManagerServer server = new ChatManagerServer();
         Scanner scan = new Scanner(System.in);
-        System.out.println("enter key when you have started ChatBotmanagerServer");
+        System.out.println("enter key and press enter when you have started ChatBotmanagerServer");
         String myLine = scan.nextLine();
         chatManager.setChatBotManager((IChatBotManager)registry.lookup("ChatBotServer"));
+        System.out.println("Connected to ChatBotServer");
 
 }
 
