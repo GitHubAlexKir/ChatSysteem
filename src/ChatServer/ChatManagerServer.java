@@ -66,8 +66,15 @@ public class ChatManagerServer {
         Scanner scan = new Scanner(System.in);
         System.out.println("enter key and press enter when you have started ChatBotmanagerServer");
         String myLine = scan.nextLine();
-        chatManager.setChatBotManager((IChatBotManager)registry.lookup("ChatBotServer"));
-        System.out.println("Connected to ChatBotServer");
+        try {
+            chatManager.setChatBotManager((IChatBotManager)registry.lookup("ChatBotServer"));
+            System.out.println("Connected to ChatBotServer");
+        }
+        catch (NotBoundException e)
+        {
+            System.out.println("failed to connect to ChatBotServer");
+        }
+
 
 }
 
