@@ -27,14 +27,7 @@ public class ChatBotManager extends UnicastRemoteObject implements IChatBotManag
         if (question.toLowerCase().contains("bitcoin"))
         {
             // build a URL
-            String s = "http://maps.google.com/maps/api/geocode/json?" +
-                    "sensor=false&address=";
-            String addr = "...";
-            try {
-                s += URLEncoder.encode(addr, "UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
+            String s = "https://coinbin.org/btc";
             URL url = null;
             try {
                 url = new URL(s);
@@ -57,8 +50,8 @@ public class ChatBotManager extends UnicastRemoteObject implements IChatBotManag
             // build a JSON object
             JSONObject obj = new JSONObject(str);
             // get the first result
-            JSONObject res = obj.getJSONArray("results").getJSONObject(0);
-            return res.getString("formatted_address");
+            JSONObject res = obj.getJSONObject("coin");
+            return "$ " + String.valueOf(res.getInt("usd"));
         }
         System.out.println(question.toLowerCase());
         for (Response response:responses
