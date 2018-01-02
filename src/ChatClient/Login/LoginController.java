@@ -15,11 +15,16 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.SQLException;
+
+import static javax.swing.JOptionPane.showMessageDialog;
 
 public class LoginController {
     private Registry registry;
@@ -104,14 +109,13 @@ public class LoginController {
     {
         if (!txt_username.getText().trim().isEmpty() && !txt_password.getText().trim().isEmpty() && server != null) {
             try {
-                user = server.login(txt_username.getText(),txt_password.getText());
+                user = server.login(txt_username.getText(),md5(txt_password.getText()));
                 if (user != null){
-                    System.out.println("success");
                     toHomeScreen(user);
                 }
                 else
                 {
-                    System.out.println("failed");
+                    showMessageDialog(null, "username or password incorrect");
                 }
             } catch (RemoteException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -126,6 +130,43 @@ public class LoginController {
         }
 
     }
+    private String md5(String input) {
+
+        String md5 = null;
+
+        if(null == input) return null;
+
+        try {
+            input += "FEJOE0dC2u";
+            //Create MessageDigest object for MD5
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+
+            //Update input string in message digest
+            digest.update(input.getBytes(), 0, input.length());
+
+            //Converts message digest value in base 16 (hex)
+            md5 = new BigInteger(1, digest.digest()).toString(16);
+
+        } catch (NoSuchAlgorithmException e) {
+            if (server != null)
+            {
+                try {
+                    server.sendMail(0,e.toString());
+                } catch (RemoteException e1) {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                    alert.setTitle("Error");
+                    alert.setHeaderText("No connection to Server");
+                    alert.setContentText("The server is unavailable at this time, try again later.");
+                    alert.showAndWait().ifPresent(rs -> {
+                        if (rs == ButtonType.OK) {
+                        }
+                    });
+                }
+            }
+        }
+        return md5;
+    }
+
     private Registry locateRegistry() throws SQLException, IOException, ClassNotFoundException {
         try
         {

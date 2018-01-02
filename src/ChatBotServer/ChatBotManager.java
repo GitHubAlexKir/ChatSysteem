@@ -1,14 +1,13 @@
 package ChatBotServer;
 
 import Domains.Request;
+import Domains.Response;
 import Interfaces.IChatBotManager;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLEncoder;
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
@@ -36,8 +35,7 @@ public class ChatBotManager extends UnicastRemoteObject implements IChatBotManag
         {
             JSONObject obj = getJson("https://api.github.com/users/" + request.getQuestion());
             return request.getQuestion() + " : Naam: " + obj.getString("name")  + ", aantal openbare repositories: " + obj.getInt("public_repos")+ ", Volgers: " +
-                    obj.getInt("followers") + ", volgend: " + obj.getInt("following") +
-                    ", Link: " + obj.getString("html_url");
+                    obj.getInt("followers") + ", volgend: " + obj.getInt("following");
         }
         else if (request.getQuestion().toLowerCase().contains(" github"))
         {

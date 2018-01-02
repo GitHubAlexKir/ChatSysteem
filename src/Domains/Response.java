@@ -1,4 +1,4 @@
-package ChatBotServer;
+package Domains;
 
 import java.io.Serializable;
 
