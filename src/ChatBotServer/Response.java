@@ -19,4 +19,5 @@ public class Response implements Serializable {
     public String getAnswer() {
         return answer;
     }
+
 }

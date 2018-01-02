@@ -1,6 +1,7 @@
 package ChatServer;
 
 import Domains.Message;
+import Domains.Request;
 import Interfaces.*;
 import Repositories.ChatRepo;
 import Repositories.MessageRepo;
@@ -103,8 +104,8 @@ public class ChatManager extends UnicastRemoteObject implements IChatServerManag
     }
 
     @Override
-    public String askQuestion(String question) throws RemoteException {
-        return chatBotManager.askQuestion(question);
+    public String askQuestion(Request request) throws RemoteException {
+        return chatBotManager.askQuestion(request);
     }
 
     @Override

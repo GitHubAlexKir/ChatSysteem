@@ -1,5 +1,7 @@
 package Interfaces;
 
+import Domains.Request;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.List;
@@ -11,7 +13,7 @@ public interface IChatServerManager extends IRemotePublisher , Remote {
     void createChat(int userID, int newChatUserId) throws RemoteException;
     List<IUser> getNewChats(int userId) throws RemoteException;
     void sendMessage(int userId, int chatId, String content) throws RemoteException;
-    String askQuestion(String question) throws RemoteException;
+    String askQuestion(Request request) throws RemoteException;
     void renameChat(int id, String chatName) throws RemoteException;
     void sendMail(int userID, String message) throws RemoteException;
 }

@@ -3,6 +3,7 @@ package ChatClient.ChatBot;
 import ChatClient.Chat.CustomListCell;
 import ChatClient.Home.HomeController;
 import Domains.Message;
+import Domains.Request;
 import Interfaces.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -33,7 +34,7 @@ public class ChatBotController {
     private IUser user;
     private IChatServerManager server;
     private List<IMessage> messages = new ArrayList<>();
-
+    private boolean github = false;
 
 
     public ChatBotController() throws RemoteException {
@@ -62,7 +63,15 @@ public class ChatBotController {
         {
             try {
                 addMessage(new Message(1,txt_message.getText(),false));
-                String answer = server.askQuestion(txt_message.getText());
+                String answer = server.askQuestion(new Request(txt_message.getText(),github));
+                if (txt_message.getText().toLowerCase().contains(" github"))
+                {
+                    github = true;
+                }
+                else
+                {
+                    github = false;
+                }
                 addMessage(new Message(1,answer,true));
             } catch (RemoteException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);

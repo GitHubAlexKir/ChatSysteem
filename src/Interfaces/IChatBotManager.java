@@ -1,8 +1,10 @@
 package Interfaces;
 
+import Domains.Request;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IChatBotManager extends Remote{
-    String askQuestion(String question) throws RemoteException;
+    String askQuestion(Request request) throws RemoteException;
 }
