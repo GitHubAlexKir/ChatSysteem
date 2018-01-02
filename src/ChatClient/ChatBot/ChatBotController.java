@@ -4,6 +4,7 @@ import ChatClient.Chat.CustomListCell;
 import ChatClient.Home.HomeController;
 import Domains.Message;
 import Domains.Request;
+import Domains.Session;
 import Interfaces.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -31,8 +32,7 @@ public class ChatBotController {
     private ListView lv_messages;
     @FXML
     private TextArea txt_message;
-    private IUser user;
-    private IChatServerManager server;
+    private Session session;
     private List<IMessage> messages = new ArrayList<>();
     private boolean github = false;
 
@@ -41,10 +41,9 @@ public class ChatBotController {
 
     }
 
-    public void setup(IUser user, IChatServerManager server)
+    public void setup(Session session)
     {
-        this.user = user;
-        this.server = server;
+        this.session = session;
         this.txt_username.setText("ChatBot");
     }
     private void updateListViewMessages()
@@ -63,7 +62,7 @@ public class ChatBotController {
         {
             try {
                 addMessage(new Message(1,txt_message.getText(),false));
-                String answer = server.askQuestion(new Request(txt_message.getText(),github));
+                String answer = session.getServer().askQuestion(new Request(txt_message.getText(),github));
                 if (txt_message.getText().toLowerCase().contains(" github"))
                 {
                     github = true;
@@ -95,7 +94,7 @@ public class ChatBotController {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendMail(user.getID(),e.toString());
+                session.getServer().sendMail(session.getUser().getID(),e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -108,7 +107,7 @@ public class ChatBotController {
             }
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
-        controller.setSettings(user,server);
+        controller.setSettings(session);
         // There's no additional data required by the newly opened form.
         Scene registerScreen = new Scene(root);
         Stage stage;

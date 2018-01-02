@@ -1,6 +1,7 @@
 package ChatClient.NewChat;
 
 import ChatClient.Home.HomeController;
+import Domains.Session;
 import Interfaces.IChatServerManager;
 import Interfaces.IUser;
 import javafx.fxml.FXML;
@@ -26,18 +27,15 @@ public class NewChatController {
     private TableView<IUser> tv_users;
     @FXML
     private TableColumn tc_user;
-
-    private IUser user;
-    private IChatServerManager server;
+    private Session session;
     private List<IUser> users;
     private IUser selectedUser;
     public NewChatController() {
     }
 
-    public void setup(IUser user, IChatServerManager server)
+    public void setup(Session session)
     {
-        this.user = user;
-        this.server = server;
+        this.session = session;
         getUsers();
     }
 
@@ -46,7 +44,7 @@ public class NewChatController {
         tv_users.getItems().clear();
         tc_user.setCellValueFactory(new PropertyValueFactory<IUser, String>("username"));
         try {
-            users = server.getNewChats(user.getID());
+            users = session.getServer().getNewChats(session.getUser().getID());
             if (!users.isEmpty()) {
                 for (IUser i : users) {
                     tv_users.getItems().add(i);
@@ -69,7 +67,7 @@ public class NewChatController {
         if (selectedUser != null)
         {
             try {
-                server.createChat(this.user.getID(),selectedUser.getID());
+                session.getServer().createChat(session.getUser().getID(),selectedUser.getID());
                 toHomeScreen();
             } catch (RemoteException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -110,7 +108,7 @@ public class NewChatController {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendMail(user.getID(),e.toString());
+                session.getServer().sendMail(session.getUser().getID(),e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -123,7 +121,7 @@ public class NewChatController {
             }
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
-        controller.setSettings(user,server);
+        controller.setSettings(session);
         // There's no additional data required by the newly opened form.
         Scene registerScreen = new Scene(root);
         Stage stage;

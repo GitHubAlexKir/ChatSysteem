@@ -2,6 +2,8 @@ package ChatClient.Login;
 
 import ChatClient.Home.HomeController;
 import ChatClient.Register.RegisterController;
+import Domains.Session;
+import Domains.User;
 import Interfaces.IChatServerManager;
 import Interfaces.IUser;
 import javafx.fxml.FXML;
@@ -28,8 +30,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public class LoginController {
     private Registry registry;
-    private IChatServerManager server;
-    private IUser user;
+    private Session session;
     @FXML
     private TextField txt_username;
     @FXML
@@ -39,7 +40,7 @@ public class LoginController {
         try {
             System.setProperty("java.rmi.server.hostname","127.0.0.1");
             this.registry = locateRegistry();
-            this.server = (IChatServerManager) registry.lookup("ChatServer");
+            this.session = new Session((IChatServerManager) registry.lookup("ChatServer"));
         } catch (SQLException | IOException | ClassNotFoundException | NotBoundException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
@@ -49,7 +50,7 @@ public class LoginController {
                 if (rs == ButtonType.OK) {
                 }
             });
-            this.server = null;
+            this.session = null;
         }
 
     }
@@ -71,7 +72,7 @@ public class LoginController {
             e.printStackTrace();
         }
         RegisterController controller = fxmlLoader.<RegisterController>getController();
-        controller.setChatServer(server);
+        controller.setSession(session);
         // There's no additional data required by the newly opened form.
         Scene registerScreen = new Scene(root);
 
@@ -94,7 +95,7 @@ public class LoginController {
             e.printStackTrace();
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
-        controller.setSettings(user,server);
+        controller.setSettings(session);
         // There's no additional data required by the newly opened form.
         Scene registerScreen = new Scene(root);
 
@@ -107,10 +108,12 @@ public class LoginController {
     @FXML
     private void login()
     {
-        if (!txt_username.getText().trim().isEmpty() && !txt_password.getText().trim().isEmpty() && server != null) {
+        IUser user;
+        if (!txt_username.getText().trim().isEmpty() && !txt_password.getText().trim().isEmpty() && session.getServer() != null) {
             try {
-                user = server.login(txt_username.getText(),md5(txt_password.getText()));
+                user = session.getServer().login(txt_username.getText(),md5(txt_password.getText()));
                 if (user != null){
+                    session.setUser(user);
                     toHomeScreen(user);
                 }
                 else
@@ -148,10 +151,10 @@ public class LoginController {
             md5 = new BigInteger(1, digest.digest()).toString(16);
 
         } catch (NoSuchAlgorithmException e) {
-            if (server != null)
+            if (session != null)
             {
                 try {
-                    server.sendMail(0,e.toString());
+                    session.getServer().sendMail(0,e.toString());
                 } catch (RemoteException e1) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");

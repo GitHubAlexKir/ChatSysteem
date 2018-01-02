@@ -1,6 +1,7 @@
 package ChatClient.Register;
 
 import ChatClient.Login.LoginController;
+import Domains.Session;
 import Interfaces.IChatServerManager;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,7 +22,7 @@ import java.security.NoSuchAlgorithmException;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public class RegisterController {
-    private IChatServerManager server;
+    private Session session;
     @FXML
     private TextField txt_username;
 
@@ -52,7 +53,7 @@ public class RegisterController {
         }
         else {
             try {
-                if (server.register(txt_username.getText(),md5(txt_password.getText()))) {
+                if (session.getServer().register(txt_username.getText(),md5(txt_password.getText()))) {
                     backToLogin();
                 }
                 else {
@@ -88,9 +89,9 @@ public class RegisterController {
             md5 = new BigInteger(1, digest.digest()).toString(16);
 
         } catch (NoSuchAlgorithmException e) {
-            if (server != null) {
+            if (session != null) {
                 try {
-                    server.sendMail(0, e.toString());
+                    session.getServer().sendMail(0, e.toString());
                 } catch (RemoteException e1) {
                     Alert alert = new Alert(Alert.AlertType.INFORMATION);
                     alert.setTitle("Error");
@@ -118,7 +119,7 @@ public class RegisterController {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendMail(0,e.toString());
+                session.getServer().sendMail(0,e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -138,7 +139,7 @@ public class RegisterController {
         stage.show();
     }
 
-    public void setChatServer(IChatServerManager server) {
-        this.server = server;
+    public void setSession(Session session) {
+        this.session = session;
     }
 }

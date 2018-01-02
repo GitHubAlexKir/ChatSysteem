@@ -2,6 +2,7 @@ package ChatClient.Chat;
 
 import ChatClient.Home.HomeController;
 import Domains.Message;
+import Domains.Session;
 import Interfaces.*;
 import javafx.animation.AnimationTimer;
 import javafx.application.Platform;
@@ -33,8 +34,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     private TextArea txt_message;
     @FXML
     private Text txt_chat;
-    private IUser user;
-    private IChatServerManager server;
+    private Session session;
     private IChat chat;
     private List<IMessage> messages = new ArrayList<>();
     private AnimationTimer messageTimer;
@@ -62,15 +62,14 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
             Platform.runLater(() -> lv_messages.scrollTo(lv_messages.getItems().size() - 1));
         }
     }
-    public void setup(IUser user, IChatServerManager server, IChat chat)
+    public void setup(Session session, IChat chat)
     {
-        this.user = user;
-        this.server = server;
+        this.session = session;
         this.chat = chat;
         this.txt_username.setText(chat.getUser_Name());
         this.txt_chat.setText(chat.getName());
         try {
-            server.addListener(this);
+            session.getServer().addListener(this);
         } catch (RemoteException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
@@ -88,7 +87,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         if (!txt_message.getText().trim().isEmpty())
         {
             try {
-                server.sendMessage(user.getID(),chat.getID(),txt_message.getText());
+                session.getServer().sendMessage(session.getUser().getID(),chat.getID(),txt_message.getText());
             } catch (RemoteException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -115,7 +114,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
         {
             txt_chat.setText(chatName);
             try {
-                server.renameChat(this.chat.getID(),chatName);
+                session.getServer().renameChat(this.chat.getID(),chatName);
             } catch (RemoteException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -134,7 +133,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
     private void toHomeScreen()
     {
         try {
-            server.removeListener(this);
+            session.getServer().removeListener(this);
         } catch (RemoteException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
@@ -152,7 +151,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
             root = (Parent)fxmlLoader.load();
         } catch (IOException e) {
             try {
-                server.sendMail(user.getID(),e.toString());
+                session.getServer().sendMail(session.getUser().getID(),e.toString());
             } catch (RemoteException e1) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
@@ -165,7 +164,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
             }
         }
         HomeController controller = fxmlLoader.<HomeController>getController();
-        controller.setSettings(user,server);
+        controller.setSettings(session);
         // There's no additional data required by the newly opened form.
         Scene registerScreen = new Scene(root);
         Stage stage;
@@ -186,7 +185,7 @@ public class ChatController extends UnicastRemoteObject implements IListener  {
 
     @Override
     public int getUserId() {
-        return this.user.getID();
+        return this.session.getUser().getID();
     }
 
     @Override
