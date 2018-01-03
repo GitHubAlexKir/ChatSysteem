@@ -48,7 +48,7 @@ public class ChatBotManager extends UnicastRemoteObject implements IChatBotManag
                 return response.getAnswer();
             }
         }
-        return "ERROR: Geen reactie gevonden, voeg een reactie toe via de knop bovenin.";
+        return "ERROR: Geen reactie gevonden.";
     }
     private JSONObject getJson(String URL)
     {
