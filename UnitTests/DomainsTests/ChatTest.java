@@ -2,6 +2,7 @@ package DomainsTests;
 
 import Domains.Chat;
 import Domains.User;
+import Interfaces.IChat;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,7 +10,7 @@ import org.junit.Test;
 import java.sql.Timestamp;
 
 public class ChatTest {
-    private Chat chat;
+    private IChat chat;
 
     @Before
     public void setup()
@@ -45,5 +46,11 @@ public class ChatTest {
     public void getUser()
     {
         Assert.assertEquals("Alex",chat.getUser().getUsername());
+    }
+
+    @Test
+    public void getUsername()
+    {
+        Assert.assertEquals("Alex",chat.getUser_Name());
     }
 }
