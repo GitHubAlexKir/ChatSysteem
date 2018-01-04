@@ -94,7 +94,7 @@ public class HomeController {
         Optional<String> result = dialog.showAndWait();
         if (result.isPresent()) {
             try {
-                session.getServer().sendMail(session.getUser().getID(),result.toString());
+                session.getServer().sendMail(session.getUser().getID(),result.get());
             } catch (RemoteException e) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Error");
