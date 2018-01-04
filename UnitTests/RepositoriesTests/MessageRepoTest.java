@@ -1,12 +1,10 @@
 package RepositoriesTests;
-
 import Interfaces.IMessage;
 import Interfaces.IMessageRepo;
 import Repositories.MessageRepo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.util.Date;
 
 public class MessageRepoTest {

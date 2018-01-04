@@ -1,18 +1,15 @@
 package RepositoriesTests;
-
-import Domains.Chat;
 import Interfaces.IChat;
 import Interfaces.IChatRepo;
 import Repositories.ChatRepo;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
-import java.sql.SQLException;
 import java.util.Date;
 
 public class ChatRepoTest {
     private IChatRepo chatRepo;
+
     @Before
     public void setup()
     {
@@ -39,6 +36,7 @@ public class ChatRepoTest {
         }
         Assert.assertEquals(true,passed);
     }
+
     @Test
     public void renameChat()
     {

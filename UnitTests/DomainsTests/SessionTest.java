@@ -1,12 +1,10 @@
 package DomainsTests;
-
 import ChatServer.ChatManager;
 import Domains.Session;
 import Domains.User;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.rmi.RemoteException;
 
 public class SessionTest {

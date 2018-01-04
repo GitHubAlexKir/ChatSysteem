@@ -1,12 +1,10 @@
 package DomainsTests;
-
 import Domains.Chat;
 import Domains.User;
 import Interfaces.IChat;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-
 import java.sql.Timestamp;
 
 public class ChatTest {
@@ -17,6 +15,7 @@ public class ChatTest {
     {
         this.chat = new Chat("naam",34,new Timestamp(1), new User(1,"Alex"));
     }
+
     @Test
     public void getName()
     {

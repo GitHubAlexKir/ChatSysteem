@@ -1,5 +1,4 @@
 package DomainsTests;
-
 import Domains.Message;
 import Interfaces.IMessage;
 import org.junit.Assert;

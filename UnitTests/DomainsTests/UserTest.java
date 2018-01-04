@@ -1,5 +1,4 @@
 package DomainsTests;
-
 import Domains.User;
 import Interfaces.IUser;
 import org.junit.Assert;

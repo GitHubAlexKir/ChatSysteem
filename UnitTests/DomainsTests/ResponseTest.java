@@ -1,5 +1,4 @@
 package DomainsTests;
-
 import Domains.Response;
 import org.junit.Assert;
 import org.junit.Before;
@@ -7,6 +6,7 @@ import org.junit.Test;
 
 public class ResponseTest {
     private Response response;
+
     @Before
     public void setup()
     {
