@@ -32,7 +32,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class LoginController {
     private Registry registry;
     private Session session;
-    private String ip = "127.0.0.1";
+    private String ip = "192.168.87.135";
     private int port = 1099;
     @FXML
     private TextField txt_username;
@@ -41,7 +41,7 @@ public class LoginController {
 
     public LoginController() {
         try {
-            System.setProperty("java.rmi.server.hostname",ip);
+            System.setProperty("java.rmi.server.hostname","192.168.1.114");
             this.registry = locateRegistry();
             if (registry != null) {
                      this.session = new Session((IChatServerManager) registry.lookup("chatserver"));
