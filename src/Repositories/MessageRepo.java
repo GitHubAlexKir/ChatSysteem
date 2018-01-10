@@ -14,12 +14,11 @@ public class MessageRepo implements IMessageRepo {
 
     @Override
     public void sendMessage(int userId, int chatId, String content) {
-        Connection conn = null;
+        String query = "INSERT into message(chatid, userid,content) VALUES(?, ?, ?);";
+        IConnection connection = new ConnectionManager();
+        Connection conn = connection.getConnection();
         PreparedStatement preparedStmt = null;
         try {
-            String query = "INSERT into message(chatid, userid,content) VALUES(?, ?, ?);";
-            IConnection connection = new ConnectionManager();
-            conn = connection.getConnection();
             preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt(1, chatId);
             preparedStmt.setInt(2,userId);
@@ -30,7 +29,9 @@ public class MessageRepo implements IMessageRepo {
         }
         finally {
             try {
-                preparedStmt.close();
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -41,14 +42,12 @@ public class MessageRepo implements IMessageRepo {
     @Override
     public List<IMessage> getMessages(int chatId, int userId) {
         List<IMessage> messages = new ArrayList<>();
-        Connection conn = null;
+        String query = "SELECT * FROM message WHERE chatid = ?;";
+        IConnection connection = new ConnectionManager();
+        Connection conn  = connection.getConnection();
         PreparedStatement preparedStmt = null;
         ResultSet rs = null;
         try {
-
-            String query = "SELECT * FROM message WHERE chatid = ?;";
-            IConnection connection = new ConnectionManager();
-            conn = connection.getConnection();
             preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt(1,chatId);
             rs = preparedStmt.executeQuery();
@@ -68,8 +67,12 @@ public class MessageRepo implements IMessageRepo {
         }
         finally {
             try {
-                rs.close();
-                preparedStmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();

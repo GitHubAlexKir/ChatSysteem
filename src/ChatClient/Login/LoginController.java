@@ -193,4 +193,8 @@ public class LoginController {
         }
     }
 
+    public void setSettings(String ip, int port) {
+        this.ip = ip;
+        this.port = port;
+    }
 }

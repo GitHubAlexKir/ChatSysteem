@@ -42,8 +42,12 @@ public class ChatRepo implements IChatRepo {
         }
         finally {
             try {
-                rs.close();
-                preparedStmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -85,10 +89,18 @@ public class ChatRepo implements IChatRepo {
         }
         finally {
             try {
-                rs.close();
-                preparedStmt.close();
-                preparedStmt2.close();
-                preparedStmt3.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
+                if (preparedStmt2 != null) {
+                    preparedStmt2.close();
+                }
+                if (preparedStmt3 != null) {
+                    preparedStmt3.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -114,7 +126,9 @@ public class ChatRepo implements IChatRepo {
         }
         finally {
             try {
-                preparedStmt.close();
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();

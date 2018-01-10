@@ -15,13 +15,12 @@ public class UserRepo implements IUserRepo {
     @Override
     public IUser login(String username, String password) {
         IUser user = null;
-        Connection conn = null;
+        String query = "SELECT * FROM user WHERE username = ? AND password= ?;";
+        IConnection connection = new ConnectionManager();
+        Connection conn = connection.getConnection();
         PreparedStatement preparedStmt = null;
         ResultSet rs = null;
         try {
-            String query = "SELECT * FROM user WHERE username = ? AND password= ?;";
-            IConnection connection = new ConnectionManager();
-            conn = connection.getConnection();
             preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setString(1,username.toLowerCase());
             preparedStmt.setString(2,password);
@@ -34,8 +33,12 @@ public class UserRepo implements IUserRepo {
         }
         finally {
             try {
-                rs.close();
-                preparedStmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -45,14 +48,12 @@ public class UserRepo implements IUserRepo {
     }
     public Boolean checkIfNameExists(String username) {
         boolean exists = false;
-        Connection conn = null;
+        String query = "SELECT * FROM user WHERE username = ?;";
+        IConnection connection = new ConnectionManager();
+        Connection conn = connection.getConnection();
         PreparedStatement preparedStmt = null;
         ResultSet rs = null;
         try {
-
-            String query = "SELECT * FROM user WHERE username = ?;";
-            IConnection connection = new ConnectionManager();
-            conn = connection.getConnection();
             preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setString(1,username.toLowerCase());
             rs = preparedStmt.executeQuery();
@@ -64,8 +65,12 @@ public class UserRepo implements IUserRepo {
         }
         finally {
             try {
-                rs.close();
-                preparedStmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -77,12 +82,11 @@ public class UserRepo implements IUserRepo {
     public boolean register(String username, String password) {
         if (!checkIfNameExists(username))
         {
-            Connection conn = null;
+            String query = "INSERT into user(username, password) VALUES(?, ?);";
+            IConnection connection = new ConnectionManager();
+            Connection conn = connection.getConnection();
             PreparedStatement preparedStmt = null;
             try {
-                String query = "INSERT into user(username, password) VALUES(?, ?);";
-                IConnection connection = new ConnectionManager();
-                conn = connection.getConnection();
                 preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
                 preparedStmt.setString(1, username.toLowerCase());
                 preparedStmt.setString(2,password);
@@ -92,7 +96,9 @@ public class UserRepo implements IUserRepo {
                 return false;
             }finally {
                 try {
-                    preparedStmt.close();
+                    if (preparedStmt != null) {
+                        preparedStmt.close();
+                    }
                     conn.close();
                 } catch (SQLException e) {
                     e.printStackTrace();
@@ -108,27 +114,25 @@ public class UserRepo implements IUserRepo {
     @Override
     public List<IUser> getNewChats(int id) {
         List<IUser> users = new ArrayList<>();
-        Connection conn = null;
+        String query = "Select * from user u WHERE u.ID NOT IN (\n" +
+                "Select u.ID from chat c\n" +
+                "join user_chat uc on uc.ChatID=c.ID\n" +
+                "join user u on u.ID=uc.UserID\n" +
+                "Where c.ID in \n" +
+                "(\n" +
+                "Select c.ID from chat c\n" +
+                "join user_chat uc on uc.ChatID=c.ID\n" +
+                "join user u on u.ID=uc.UserID\n" +
+                "where u.ID = ?\n" +
+                ")\n" +
+                "and u.ID != ?\n" +
+                ")\n" +
+                "and u.ID != ?";
+        IConnection connection = new ConnectionManager();
+        Connection conn = connection.getConnection();
         PreparedStatement preparedStmt = null;
         ResultSet rs = null;
         try {
-
-            String query = "Select * from user u WHERE u.ID NOT IN (\n" +
-                    "Select u.ID from chat c\n" +
-                    "join user_chat uc on uc.ChatID=c.ID\n" +
-                    "join user u on u.ID=uc.UserID\n" +
-                    "Where c.ID in \n" +
-                    "(\n" +
-                    "Select c.ID from chat c\n" +
-                    "join user_chat uc on uc.ChatID=c.ID\n" +
-                    "join user u on u.ID=uc.UserID\n" +
-                    "where u.ID = ?\n" +
-                    ")\n" +
-                    "and u.ID != ?\n" +
-                    ")\n" +
-                    "and u.ID != ?";
-            IConnection connection = new ConnectionManager();
-            conn = connection.getConnection();
             preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt(1,id);
             preparedStmt.setInt(2,id);
@@ -143,8 +147,12 @@ public class UserRepo implements IUserRepo {
         }
         finally {
             try {
-                rs.close();
-                preparedStmt.close();
+                if (rs != null) {
+                    rs.close();
+                }
+                if (preparedStmt != null) {
+                    preparedStmt.close();
+                }
                 conn.close();
             } catch (SQLException e) {
                 e.printStackTrace();
