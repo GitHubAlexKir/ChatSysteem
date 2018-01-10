@@ -52,22 +52,28 @@ public class ChatBotManager extends UnicastRemoteObject implements IChatBotManag
     }
     private JSONObject getJson(String URL)
     {
-        URL url = null;
-        try {
-            url = new URL(URL);
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        Scanner scan = null;
-        try {
-            scan = new Scanner(url.openStream());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        StringBuilder str = new StringBuilder();
-        while (scan.hasNext())
-            str.append(scan.nextLine());
-        scan.close();
-        return new JSONObject(str.toString());
+            URL url = null;
+            try {
+                url = new URL(URL);
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+            Scanner scan = null;
+            if (url != null) {
+                try {
+                    scan = new Scanner(url.openStream());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            StringBuilder str = new StringBuilder();
+            if (scan != null)
+            {
+                while (scan.hasNext())
+                    str.append(scan.nextLine());
+                scan.close();
+            }
+            return new JSONObject(str.toString());
+
     }
 }

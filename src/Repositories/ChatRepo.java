@@ -25,19 +25,29 @@ public class ChatRepo implements IChatRepo {
         IConnection connection = new ConnectionManager();
         Connection conn = connection.getConnection();
         PreparedStatement preparedStmt = null;
+        ResultSet rs = null;
         try {
             preparedStmt = conn.prepareStatement(getChats, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt (1, userId);
             preparedStmt.setInt (2, userId);
-            ResultSet rs = preparedStmt.executeQuery();
+            rs = preparedStmt.executeQuery();
             while (rs.next()) {
                 chats.add(new Chat(rs.getString("name"),
                         rs.getInt("ID"),rs.getTimestamp("dateCreated"),
                         new User(rs.getInt("userID"),rs.getString("username"))));
             }
-            conn.close();
+
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                rs.close();
+                preparedStmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return chats;
     }
@@ -49,26 +59,40 @@ public class ChatRepo implements IChatRepo {
                 + " values (?, ?)";
         IConnection connection = new ConnectionManager();
         Connection conn = connection.getConnection();
+        PreparedStatement preparedStmt = null;
+        PreparedStatement preparedStmt2 = null;
+        PreparedStatement preparedStmt3 = null;
+        ResultSet rs = null;
         try {
-            PreparedStatement preparedStmt = conn.prepareStatement(queryCreateChat, Statement.RETURN_GENERATED_KEYS);
+            preparedStmt = conn.prepareStatement(queryCreateChat, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.execute();
-            ResultSet rs = preparedStmt.getGeneratedKeys();
+            rs = preparedStmt.getGeneratedKeys();
             int generatedKey = 0;
             if (rs.next()) {
                 generatedKey = rs.getInt(1);
             }
             System.out.println(generatedKey);
-            PreparedStatement preparedStmt2 = conn.prepareStatement(queryJoinChat);
+            preparedStmt2 = conn.prepareStatement(queryJoinChat);
             preparedStmt2.setInt (1, userID);
             preparedStmt2.setInt (2, generatedKey);
             preparedStmt2.execute();
-            PreparedStatement preparedStmt3 = conn.prepareStatement(queryJoinChat);
+            preparedStmt3 = conn.prepareStatement(queryJoinChat);
             preparedStmt3.setInt (1, newChatUserId);
             preparedStmt3.setInt (2, generatedKey);
             preparedStmt3.execute();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                rs.close();
+                preparedStmt.close();
+                preparedStmt2.close();
+                preparedStmt3.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
 
     }
@@ -78,15 +102,23 @@ public class ChatRepo implements IChatRepo {
         String queryRenameChat = "update chat set name = ? where id = ?;";
         IConnection connection = new ConnectionManager();
         Connection conn = connection.getConnection();
+        PreparedStatement preparedStmt = null;
         try {
 
-            PreparedStatement preparedStmt = conn.prepareStatement(queryRenameChat);
+            preparedStmt = conn.prepareStatement(queryRenameChat);
             preparedStmt.setString (1, chatName);
             preparedStmt.setInt (2, chatId);
             preparedStmt.execute();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                preparedStmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

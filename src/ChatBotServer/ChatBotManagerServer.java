@@ -6,10 +6,10 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class ChatBotManagerServer {
-    private int portNumber = 1099;
-    private String ip = "127.0.0.1";
+    private static int portNumber = 1099;
+    private static String ip = "127.0.0.1";
     // Set binding name for student administration
-    private String bindingName = "ChatBotServer";
+    private  String bindingName = "ChatBotServer";
 
     // References to registry and student administration
     private Registry registry = null;
@@ -42,7 +42,9 @@ public class ChatBotManagerServer {
 
         // Bind ChatClientController using registry
         try {
-            registry.rebind(bindingName, chatBotManager);
+            if (registry != null) {
+                registry.rebind(bindingName, chatBotManager);
+            }
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind student administration");
             System.out.println("Server: RemoteException: " + ex.getMessage());
@@ -64,6 +66,14 @@ public class ChatBotManagerServer {
      */
     public static void main(String[] args) throws IOException, ClassNotFoundException {
         System.out.println("SERVER USING REGISTRY");
+        if (args.length != 0) {
+            if (!args[0].isEmpty()) {
+                ip = args[0];
+            }
+            if (!args[1].isEmpty()) {
+                portNumber = Integer.parseInt(args[1]);
+            }
+        }
         ChatBotManagerServer server = new ChatBotManagerServer();
     }
 }

@@ -14,32 +14,44 @@ public class MessageRepo implements IMessageRepo {
 
     @Override
     public void sendMessage(int userId, int chatId, String content) {
+        Connection conn = null;
+        PreparedStatement preparedStmt = null;
         try {
             String query = "INSERT into message(chatid, userid,content) VALUES(?, ?, ?);";
             IConnection connection = new ConnectionManager();
-            Connection conn = connection.getConnection();
-            PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            conn = connection.getConnection();
+            preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt(1, chatId);
             preparedStmt.setInt(2,userId);
             preparedStmt.setString(3,content);
             preparedStmt.execute();
-            conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                preparedStmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     @Override
     public List<IMessage> getMessages(int chatId, int userId) {
         List<IMessage> messages = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement preparedStmt = null;
+        ResultSet rs = null;
         try {
 
             String query = "SELECT * FROM message WHERE chatid = ?;";
             IConnection connection = new ConnectionManager();
-            Connection conn = connection.getConnection();
-            PreparedStatement preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+            conn = connection.getConnection();
+            preparedStmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             preparedStmt.setInt(1,chatId);
-            ResultSet rs = preparedStmt.executeQuery();
+            rs = preparedStmt.executeQuery();
             while (rs.next()) {
                 if (rs.getInt("userId") == userId)
                 {
@@ -53,6 +65,15 @@ public class MessageRepo implements IMessageRepo {
             conn.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                rs.close();
+                preparedStmt.close();
+                conn.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
         return messages;
     }

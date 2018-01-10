@@ -12,8 +12,8 @@ import java.util.Scanner;
 
 public class ChatManagerServer {
     // Set port number
-    private int portNumber = 1099;
-    private String ip = "127.0.0.1";
+    private static int portNumber = 1099;
+    private static String ip = "127.0.0.1";
     // Set binding name for student administration
     private String bindingName = "ChatServer";
 
@@ -49,7 +49,9 @@ public class ChatManagerServer {
 
         // Bind ChatClientController using registry
         try {
-            registry.rebind(bindingName, chatManager);
+            if (registry != null) {
+                registry.rebind(bindingName, chatManager);
+            }
         } catch (RemoteException ex) {
             System.out.println("Server: Cannot bind student administration");
             System.out.println("Server: RemoteException: " + ex.getMessage());
@@ -62,6 +64,14 @@ public class ChatManagerServer {
 
     public static void main(String[] args) throws SQLException, IOException, ClassNotFoundException, NotBoundException {
         System.out.println("SERVER USING REGISTRY");
+        if (args.length != 0) {
+            if (!args[0].isEmpty()) {
+                ip = args[0];
+            }
+            if (!args[1].isEmpty()) {
+                portNumber = Integer.parseInt(args[1]);
+            }
+        }
         ChatManagerServer server = new ChatManagerServer();
         Scanner scan = new Scanner(System.in);
         System.out.println("enter key and press enter when you have started ChatBotmanagerServer");

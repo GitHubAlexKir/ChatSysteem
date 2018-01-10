@@ -31,6 +31,8 @@ import static javax.swing.JOptionPane.showMessageDialog;
 public class LoginController {
     private Registry registry;
     private Session session;
+    private String ip = "127.0.0.1";
+    private int port = 1099;
     @FXML
     private TextField txt_username;
     @FXML
@@ -38,10 +40,13 @@ public class LoginController {
 
     public LoginController() {
         try {
-            System.setProperty("java.rmi.server.hostname","127.0.0.1");
+            System.setProperty("java.rmi.server.hostname",ip);
             this.registry = locateRegistry();
-            this.session = new Session((IChatServerManager) registry.lookup("ChatServer"));
-        } catch (SQLException | IOException | ClassNotFoundException | NotBoundException e) {
+            if (registry != null) {
+                     this.session = new Session((IChatServerManager) registry.lookup("ChatServer"));
+                 }
+            }
+            catch (SQLException | IOException | ClassNotFoundException | NotBoundException e) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Error");
             alert.setHeaderText("No connection to Server");
@@ -173,7 +178,7 @@ public class LoginController {
     private Registry locateRegistry() throws SQLException, IOException, ClassNotFoundException {
         try
         {
-            return LocateRegistry.getRegistry("127.0.0.1", 1099);
+            return LocateRegistry.getRegistry(ip, port);
         }
         catch (RemoteException ex) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
